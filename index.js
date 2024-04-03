@@ -3,7 +3,7 @@ const app = express();
 require("dotenv").config();
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const jwt = require("jsonwebtoken");
 const morgan = require("morgan");
 const port = process.env.PORT || 8000;
@@ -48,6 +48,8 @@ async function run() {
   try {
     const userCollection = client.db("EventiFyDb").collection("users");
     const eventsCollection = client.db("EventiFyDb").collection("events");
+    const blogsCollection = client.db("EventiFyDb").collection("blogs");
+    const reviewsCollection = client.db("EventiFyDb").collection("reviews");
     // auth related api
     app.post("/jwt", async (req, res) => {
       const user = req.body;
@@ -96,6 +98,38 @@ async function run() {
         },
         options
       );
+      res.send(result);
+    });
+
+    //services related Apis
+    app.get("/services", async (req, res) => {
+      const result = await eventsCollection.find().toArray();
+      res.send(result);
+    });
+
+    app.get("/services/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await eventsCollection.findOne(query);
+      res.send(result);
+    });
+
+    //blogs related apis
+    app.get("/blogs", async (req, res) => {
+      const result = await blogsCollection.find().toArray();
+      res.send(result);
+    });
+
+    app.get("/blogs/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await blogsCollection.findOne(query);
+      res.send(result);
+    });
+
+    //reviews related apis
+    app.get("/reviews", async (req, res) => {
+      const result = await reviewsCollection.find().toArray();
       res.send(result);
     });
 
