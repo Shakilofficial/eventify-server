@@ -50,6 +50,7 @@ async function run() {
     const eventsCollection = client.db("EventiFyDb").collection("events");
     const blogsCollection = client.db("EventiFyDb").collection("blogs");
     const reviewsCollection = client.db("EventiFyDb").collection("reviews");
+
     // auth related api
     app.post("/jwt", async (req, res) => {
       const user = req.body;
@@ -115,12 +116,12 @@ async function run() {
     });
 
     //blogs related apis
-    app.get("/blogs", async (req, res) => {
+    app.get("/blog", async (req, res) => {
       const result = await blogsCollection.find().toArray();
       res.send(result);
     });
 
-    app.get("/blogs/:id", async (req, res) => {
+    app.get("/blog/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
       const result = await blogsCollection.findOne(query);
