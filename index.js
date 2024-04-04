@@ -7,7 +7,6 @@ const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const jwt = require("jsonwebtoken");
 const morgan = require("morgan");
 const port = process.env.PORT || 8000;
-
 // middleware
 const corsOptions = {
   origin: ["http://localhost:5173", "http://localhost:5174"],
@@ -143,10 +142,11 @@ async function run() {
       res.send(result);
     });
 
-    //blog comments related apis----->
 
-    //comment on blog:----> Handle POST request to save comments
-    app.post("/blog/comment", async (req, res) => {
+    //user comments related apis
+
+    //----> Handle POST request to save comments
+    app.post("/blog/comment",verifyToken, async (req, res) => {
       try {
         const { displayName, photoURL, email, blogId, comment } = req.body;
         const result = await commentsCollection.insertOne({
