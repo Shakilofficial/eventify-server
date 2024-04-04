@@ -47,6 +47,7 @@ const client = new MongoClient(process.env.DB_URI, {
 async function run() {
   try {
     const userCollection = client.db("EventiFyDb").collection("users");
+    const contactsCollection = client.db("EventiFyDb").collection("contacts");
     const eventsCollection = client.db("EventiFyDb").collection("events");
     const blogsCollection = client.db("EventiFyDb").collection("blogs");
     const reviewsCollection = client.db("EventiFyDb").collection("reviews");
@@ -132,6 +133,23 @@ async function run() {
     app.get("/reviews", async (req, res) => {
       const result = await reviewsCollection.find().toArray();
       res.send(result);
+    });
+
+    //contacts related apis
+    app.post("/contact", async (req, res) => {
+      try {
+        const { name, email, textarea } = req.body;
+        const result = await contactsCollection.insertOne({
+          name,
+          email,
+          message: textarea,
+        });
+
+        res.status(201).json({ message: "Contact saved successfully" });
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Error saving contact" });
+      }
     });
 
     // Send a ping to confirm a successful connection
