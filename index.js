@@ -143,14 +143,17 @@ async function run() {
       res.send(result);
     });
 
-    // Handle POST request to save comments
+    //blog comments related apis----->
+
+    //comment on blog:----> Handle POST request to save comments
     app.post("/blog/comment", async (req, res) => {
       try {
-        const { displayName, photoURL, email, comment } = req.body;
+        const { displayName, photoURL, email, blogId, comment } = req.body;
         const result = await commentsCollection.insertOne({
           displayName,
           photoURL,
           email,
+          blogId,
           comment,
           createdAt: new Date(),
         });
