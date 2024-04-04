@@ -52,6 +52,7 @@ async function run() {
     const blogsCollection = client.db("EventiFyDb").collection("blogs");
     const reviewsCollection = client.db("EventiFyDb").collection("reviews");
     const faqsCollection = client.db("EventiFyDb").collection("faqs");
+    const commentsCollection = client.db("EventiFyDb").collection("comments");
 
     // auth related api
     app.post("/jwt", async (req, res) => {
@@ -140,6 +141,24 @@ async function run() {
     app.get("/faqs", async (req, res) => {
       const result = await faqsCollection.find().toArray();
       res.send(result);
+    });
+
+    // Handle POST request to save comments
+    app.post("/blog/comment", async (req, res) => {
+      try {
+        const { displayName, photoURL, email, comment } = req.body;
+        const result = await commentsCollection.insertOne({
+          displayName,
+          photoURL,
+          email,
+          comment,
+          createdAt: new Date(),
+        });
+        res.status(201).json({ message: "Comment saved successfully" });
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Error saving comment" });
+      }
     });
 
     //contacts related apis
